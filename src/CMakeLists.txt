@@ -31,3 +31,5 @@ endif()
 
 # Another pico macro which generates the uf2 file in addition to the elf
 pico_add_extra_outputs(lab09)
+
+add_custom_target(flash picotool load -f $<TARGET_FILE:lab09> DEPENDS lab09)
