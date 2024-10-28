@@ -1,9 +1,9 @@
 # This is the main binary. List your C files here.
 add_executable(lab09
-    sleep.c
+    can.c
     )
 
-pico_set_program_name(lab09 "lab05")
+pico_set_program_name(lab09 "lab09")
 pico_set_program_version(lab09 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB.
@@ -17,6 +17,7 @@ target_link_libraries(lab09 PRIVATE
   pico_multicore
   pico_async_context_freertos
   FreeRTOS-Kernel-Heap4
+  can2040
 )
 
 # The CYW43 is the Wifi/Bluetooth module. If the board is set to pico_w, this
