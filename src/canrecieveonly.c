@@ -53,45 +53,19 @@ void main_thread(void *params){
     }
 }
 
-void send_thread(void *params){
-
-    while(1){
-        struct can2040_msg send_msg;
-        send_msg.id = 0x200;
-        send_msg.dlc = 5;
-        send_msg.data[0] = 'H';
-        send_msg.data[1] = 'e';
-        send_msg.data[2] = 'l';
-        send_msg.data[3] = 'l';
-        send_msg.data[4] = 'o';
-
-        int status = can2040_transmit(&cbus, &send_msg);
-
-        if(status == 0){
-            printf("Message sent\n");
-        } else if (status < 0) {
-            printf("No space on CAN message queue.\n");
-        }
-
-        vTaskDelay(5000);
-
-    }
-}
-
 int main(void)
 {
     stdio_init_all();
+
     sleep_ms(5000);
     printf("Starting Pico\n");
+
 
     recieved_msgs = xQueueCreate(100, sizeof(struct can2040_msg));
     canbus_setup();
     TaskHandle_t main_task, send_task;
     xTaskCreate(main_thread, "MainThread",
             MAIN_TASK_STACK_SIZE, NULL, MAIN_TASK_PRIORITY, &main_task);
-    xTaskCreate(send_thread, "SendThread",
-            SEND_TASK_STACK_SIZE, NULL, SEND_TASK_PRIORITY, &send_task);
     vTaskStartScheduler();
-    
     return(0);
 }
