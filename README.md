@@ -1,4 +1,4 @@
-#Lab 08 for Semrah & Elmir
+# Lab 08 for Semrah & Elmir
 
 ![Workflow](https://github.com/uofu-emb/2024-lab08-Semrah-Elmir/actions/workflows/main.yml/badge.svg)
 
