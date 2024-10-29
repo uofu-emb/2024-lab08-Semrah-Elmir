@@ -33,6 +33,12 @@ else()
     set(UNITY_PATH lib/unity)
 endif()
 
+if(DEFINED ENV{CAN_PATH})
+    set(CAN_PATH $ENV{CAN_PATH})
+else()
+    set(CAN_PATH lib/can2040)
+endif()
+
 # ====================================================================================
 cmake_minimum_required(VERSION 3.13)
 
@@ -48,6 +54,8 @@ include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 # This imports the library configuration for FreeRTOS
 include(lib/freertos/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
+
+include(${CAN_PATH}/can2040.cmake)
 
 # This sets up the unity library. They don't provide a library export, so it's defined locally.
 include(unity.cmake)
