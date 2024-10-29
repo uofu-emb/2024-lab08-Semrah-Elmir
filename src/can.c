@@ -46,7 +46,10 @@ void canbus_setup(void)
 }
 
 void main_thread(void *params){
+    canbus_setup();
+
     while(1) {
+        //Creat a message struct and receive message from the queue. Print message.
         struct can2040_msg msg;
         xQueueReceive(recieved_msgs, &msg, portMAX_DELAY); 
         printf("Recieved message: %s\n", msg.data);
@@ -56,6 +59,8 @@ void main_thread(void *params){
 void send_thread(void *params){
 
     while(1){
+
+        //Create a message struct and put hello into the data. Priority of 200. (Low)
         struct can2040_msg send_msg;
         send_msg.id = 0x200;
         send_msg.dlc = 5;
@@ -65,33 +70,36 @@ void send_thread(void *params){
         send_msg.data[3] = 'l';
         send_msg.data[4] = 'o';
 
+        //Send the message and check status
         int status = can2040_transmit(&cbus, &send_msg);
 
-        if(status == 0){
-            printf("Message sent\n");
-        } else if (status < 0) {
-            printf("No space on CAN message queue.\n");
-        }
+        //Check if the message was sent successfully
+        // if(status == 0){
+        //     printf("Message sent\n");
+        // } else if (status < 0) {
+        //     printf("No space on CAN message queue.\n");
+        // }
 
-        vTaskDelay(5000);
-
+        //Delay so we can see whats happening.
+        vTaskDelay(50);
     }
 }
 
 int main(void)
 {
+    //Initialize and wait for 5 seconds.
     stdio_init_all();
-    sleep_ms(5000);
+    //sleep_ms(5000);
     printf("Starting Pico\n");
 
+    //Create queue. Setup the CAN bus. Create threads. Start scheduler.
     recieved_msgs = xQueueCreate(100, sizeof(struct can2040_msg));
-    canbus_setup();
     TaskHandle_t main_task, send_task;
     xTaskCreate(main_thread, "MainThread",
             MAIN_TASK_STACK_SIZE, NULL, MAIN_TASK_PRIORITY, &main_task);
     xTaskCreate(send_thread, "SendThread",
             SEND_TASK_STACK_SIZE, NULL, SEND_TASK_PRIORITY, &send_task);
     vTaskStartScheduler();
-    
+
     return(0);
 }
